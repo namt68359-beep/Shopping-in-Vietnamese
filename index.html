@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Shopping in Vietnamese</title>
+<style>
+:root{--ink:#222;--brand:#2f6fd6;--line:#e6dfd0;--pink:#ffe3ec;--blue:#dff0ff;--green:#e4f7d6;--sun:#ffd84d}
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,"Segoe UI",Arial,sans-serif;color:var(--ink);background:#fffcf5;line-height:1.5;padding-top:env(safe-area-inset-top,0px)}
+header{position:sticky;top:0;z-index:5;background:#fff;border-bottom:4px solid var(--sun);padding:10px 12px;display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:center}
+header h1{font-size:18px;margin:0 8px 0 0;color:var(--brand)}
+button{font:inherit;cursor:pointer;border:0;border-radius:12px;padding:8px 14px;background:var(--brand);color:#fff}
+button.ghost{background:#fff;color:var(--brand);border:2px solid var(--brand)}
+button.small{padding:4px 10px;font-size:14px}
+main{max-width:980px;margin:0 auto;padding:16px}
+.view{display:none}.view.on{display:block}
+h2{font-size:24px;margin:8px 0 12px}
+h3{font-size:18px;margin:18px 0 8px}
+.grid{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}
+.card{background:#fff;border:2px solid var(--line);border-radius:18px;padding:12px;text-align:center;box-shadow:0 2px 0 var(--line)}
+.card.done{border-color:#4caf50;background:#f1fbf1}
+.card .em{font-size:44px;line-height:1.2}
+.card b{display:block;font-size:17px}
+.card small{color:#666}
+.topics{display:grid;gap:16px;grid-template-columns:repeat(auto-fill,minmax(250px,1fr))}
+.topic{border-radius:22px;padding:22px;text-align:center;cursor:pointer;border:0;color:var(--ink);font-size:16px}
+.topic .em{font-size:72px;display:block}
+.topic b{display:block;font-size:20px;margin:6px 0 10px}
+.t1{background:var(--pink)}.t2{background:linear-gradient(135deg,#ffd6a5,#c7f0ff,#d9c6ff)}.t3{background:var(--green)}
+.box{background:#fff;border:2px solid var(--line);border-radius:18px;padding:14px;margin:10px 0}
+.exp{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;padding:8px 0;border-bottom:1px dashed var(--line)}
+.exp span.en{color:#666;font-style:italic}
+.swatch{height:90px;border-radius:14px;border:2px solid #ccc;margin-bottom:8px}
+table{border-collapse:collapse;width:100%;background:#fff}
+td,th{border:1px solid var(--line);padding:6px 8px;text-align:left}
+.q{margin:10px 0 18px;padding:14px;background:#fff;border-radius:18px;border:2px solid var(--line)}
+.opts{display:flex;flex-wrap:wrap;gap:10px;margin-top:8px}
+.opt{background:#fff;color:var(--ink);border:3px solid var(--line);padding:6px;border-radius:14px}
+.opt.sel{border-color:var(--brand)}
+.opt.right{border-color:#2e9d4a;background:#eafaef}
+.opt.wrong{border-color:#d9534f;background:#fdeeee}
+.fb{margin-top:8px;font-size:15px}
+.fb.ok{color:#23803a}.fb.bad{color:#b3261e}
+.pill{display:inline-block;padding:2px 10px;border-radius:99px;background:var(--blue);margin:2px}
+.hidden-line{color:#999;background:#f3f3f3;border-radius:8px;padding:2px 8px;cursor:pointer}
+.tr{color:#555;font-style:italic;display:none;margin-left:20px}
+.tr.on{display:block}
+.pool{display:flex;flex-wrap:wrap;gap:8px;min-height:40px;padding:8px;background:#f7f5ef;border-radius:12px}
+.answer{min-height:44px;padding:8px;border:2px dashed #bbb;border-radius:12px;margin:8px 0;display:flex;flex-wrap:wrap;gap:6px}
+.basket{position:sticky;top:70px;background:#fff8d6;border:2px solid var(--sun);border-radius:18px;padding:12px}
+.shop{display:grid;grid-template-columns:1fr 280px;gap:16px}
+@media(max-width:720px){.shop{grid-template-columns:1fr}.basket{position:static}}
+.footer{text-align:center;color:#777;padding:24px 12px;border-top:1px solid var(--line);margin-top:30px}
+.prog{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px}
+.prog div{background:#fff;border-radius:14px;padding:12px;text-align:center;border:2px solid var(--line)}
+.prog b{font-size:26px;display:block;color:var(--brand)}
+.flip{min-height:120px;cursor:pointer}
+</style>
+</head>
+<body>
+<header>
+  <h1>Shopping in Vietnamese</h1>
+  <button class="ghost small" onclick="show('home')">🏠 Home</button>
+  <button class="ghost small" onclick="show('clothes')">👕 Clothes</button>
+  <button class="ghost small" onclick="show('colors')">🎨 Colors</button>
+  <button class="ghost small" onclick="show('market')">🛒 Market</button>
+  <button class="ghost small" onclick="show('reading')">📖 Reading</button>
+  <button class="ghost small" onclick="show('practice')">✏️ Practice</button>
+  <button class="ghost small" onclick="show('review')">🔁 Review</button>
+</header>
+
+<main>
+
+<!-- HOME -->
+<section id="home" class="view on">
+  <h2 style="text-align:center;font-size:30px">SHOPPING IN VIETNAMESE</h2>
+  <p style="text-align:center;color:#555">Learn Vietnamese through everyday shopping situations.</p>
+  <div class="topics">
+    <div class="topic t1" onclick="show('clothes')"><span class="em">👕👗👟</span><b>Shopping for Clothes</b><button>Start Learning</button></div>
+    <div class="topic t2" onclick="show('colors')"><span class="em">🎨🔴🟡🔵</span><b>Colors &amp; Describing Things</b><button>Start Learning</button></div>
+    <div class="topic t3" onclick="show('market')"><span class="em">🍎🥕🛒</span><b>At the Market &amp; Supermarket</b><button>Start Learning</button></div>
+  </div>
+  <div class="box" style="margin-top:18px">
+    <p><b>Also here:</b></p>
+    <div class="grid" style="grid-template-columns:repeat(auto-fill,minmax(180px,1fr))">
+      <div class="card" onclick="show('review')"><div class="em">📇</div><b>Vocabulary Review</b></div>
+      <div class="card" onclick="show('practice')"><div class="em">✍️</div><b>Sentence Practice</b></div>
+      <div class="card" onclick="show('reading')"><div class="em">📖</div><b>Reading Practice</b></div>
+      <div class="card" onclick="show('review')"><div class="em">⭐</div><b>My Progress</b></div>
+    </div>
+  </div>
+</section>
+
+<!-- CLOTHES -->
+<section id="clothes" class="view">
+  <h2>👕 Topic 1: Shopping for Clothes</h2>
+  <h3>A. Learn Vocabulary</h3>
+  <p>Tap 🔊 to hear a word (if your browser supports speech). Tap “Mark learned” when you know it.</p>
+  <div class="grid" id="clothesCards"></div>
+
+  <h3>B. Useful Shopping Expressions</h3>
+  <div id="clothesExpr"></div>
+
+  <h3>C. Visual Sentence Practice</h3>
+  <div id="clothesQuiz"></div>
+
+  <h3>D. Shopping Dialogue</h3>
+  <div class="box">
+    <button class="ghost small" onclick="toggleAllTr()">Show / Hide Translation</button>
+    <label style="margin-left:12px">Role-play: hide 
+      <select id="roleSel" onchange="renderDialog()">
+        <option value="">nothing</option>
+        <option value="C">the customer’s lines</option>
+        <option value="S">the shop assistant’s lines</option>
+      </select>
+    </label>
+    <p style="color:#666;font-size:14px">In role-play mode, tap a grey line to reveal it and practise saying it yourself.</p>
+    <div id="dialog"></div>
+  </div>
+</section>
+
+<!-- COLORS -->
+<section id="colors" class="view">
+  <h2>🎨 Topic 2: Colors &amp; Describing Things</h2>
+  <h3>A. Learn Colors</h3>
+  <div class="grid" id="colorCards"></div>
+  <div class="box">
+    <p><b>xanh lá cây</b> = green. &nbsp; <b>xanh dương / xanh nước biển</b> = blue. &nbsp; <b>xanh da trời</b> = sky blue.</p>
+  </div>
+
+  <h3>B. Useful Questions About Colors</h3>
+  <div id="colorExpr"></div>
+
+  <h3>C. Visual Color Matching Game</h3>
+  <p>Look at the items and pick the one that matches the question. Feedback appears straight away.</p>
+  <div id="colorQuiz"></div>
+
+  <h3>D. Build a Sentence</h3>
+  <div class="box">
+    <p>Tap the words in the right order to make: <b>Cái áo màu đỏ.</b> (the red shirt)</p>
+    <div style="font-size:48px">👕 + 🔴</div>
+    <div class="answer" id="bA-answer"></div>
+    <div class="pool" id="bA-pool"></div>
+    <p><button class="small" onclick="checkBuilder('bA')">Check</button> <button class="ghost small" onclick="resetBuilder('bA')">Reset</button> <span id="bA-fb"></span></p>
+  </div>
+</section>
+
+<!-- MARKET -->
+<section id="market" class="view">
+  <h2>🛒 Topic 3: At the Market &amp; Supermarket</h2>
+  <h3>A. Places</h3>
+  <div class="grid" style="grid-template-columns:repeat(2,1fr)">
+    <div class="box"><div style="font-size:40px">🧺🏪</div><b>chợ</b> = market<br>Open-air, traditional. Sellers at stalls, often bargain.</div>
+    <div class="box"><div style="font-size:40px">🛒🏬</div><b>siêu thị</b> = supermarket<br>Indoor, fixed prices, shopping carts and checkout counters.</div>
+  </div>
+  <p>Other words: <span class="pill">cửa hàng = shop</span><span class="pill">quầy hàng = stall</span><span class="pill">hàng hóa = goods</span><span class="pill">giỏ hàng = shopping basket</span><span class="pill">xe đẩy = shopping cart</span><span class="pill">quầy thu ngân = checkout</span><span class="pill">người bán hàng = seller</span><span class="pill">khách hàng = customer</span></p>
+
+  <h3>B–D. Fruits, Vegetables, Meat &amp; Fish</h3>
+  <div class="grid" id="produceCards"></div>
+
+  <h3>E. Units of Measurement</h3>
+  <table>
+    <tr><th>Vietnamese</th><th>English</th></tr>
+    <tr><td>một ký / một ki-lô-gam</td><td>one kilogram</td></tr>
+    <tr><td>nửa ký</td><td>half a kilogram</td></tr>
+    <tr><td>một lạng</td><td>100 grams</td></tr>
+    <tr><td>hai lạng</td><td>200 grams</td></tr>
+    <tr><td>năm lạng</td><td>500 grams</td></tr>
+    <tr><td>một gam</td><td>one gram</td></tr>
+  </table>
+  <div class="box"><b>1 kg = 1,000 grams</b> &nbsp;·&nbsp; <b>1 lạng = 100 grams</b> &nbsp;·&nbsp; <b>5 lạng = 500 grams = nửa ký</b></div>
+
+  <h3>F. Useful Shopping Expressions at the Market</h3>
+  <div id="marketExpr"></div>
+
+  <h3>G. Interactive Shopping Game</h3>
+  <p>Add products with the quantity buttons. The basket updates as you go. Prices are sample prices per kilogram.</p>
+  <div class="shop">
+    <div>
+      <div class="box"><b>Shopping list:</b> <span id="listBox"></span></div>
+      <div class="grid" id="shopGrid"></div>
+    </div>
+    <div class="basket">
+      <b>🧺 Your basket</b>
+      <div id="basketItems" style="margin:8px 0"></div>
+      <div><b>Total: <span id="basketTotal">0</span> ₫</b></div>
+      <button class="small" style="margin-top:8px" onclick="finishShopping()">Finish shopping</button>
+      <div id="shopResult" style="margin-top:10px;font-size:15px"></div>
+      <button class="ghost small" style="margin-top:8px" onclick="resetShop()">Empty basket</button>
+    </div>
+  </div>
+</section>
+
+<!-- READING -->
+<section id="reading" class="view">
+  <h2>📖 Reading Practice</h2>
+  <h3>Bài 1. Đọc đoạn văn sau đó xác định đúng hoặc sai cho các câu sau:</h3>
+  <p><i>Read the following paragraph and decide whether the following sentences are true or false.</i></p>
+  <div class="box">
+    <p style="font-size:18px">Tôi là Miyaki. Hôm qua, tôi đã đi siêu thị Vin-mart cùng mẹ. Ở siêu thị có rất nhiều hàng hóa. Tôi đã mua 3 kg táo của Mỹ và 2 kg nho xanh. Mẹ tôi đã thử một cái áo. Cái áo màu vàng rất đẹp nhưng hơi đắt. Mẹ tôi đã không mua áo. Ở nhà đã có rau bắp cải và thịt bò. Vì thế, tôi không mua rau và thịt.</p>
+    <button class="ghost small" onclick="document.getElementById('readTr').classList.toggle('on')">Show / Hide English Translation</button>
+    <p id="readTr" class="tr" style="margin-left:0">My name is Miyaki. Yesterday, I went to Vin-Mart supermarket with my mother. There were many products in the supermarket. I bought 3 kilograms of American apples and 2 kilograms of green grapes. My mother tried on a shirt. The yellow shirt was very beautiful, but a little expensive. My mother didn’t buy it. We already had cabbage and beef at home, so I didn’t buy any vegetables or meat.</p>
+  </div>
+
+  <h3>Vocabulary from the Reading (tap a card to see the English)</h3>
+  <div class="grid" id="readVocab"></div>
+
+  <h3>a. Đúng hay sai? (True or False)</h3>
+  <div id="ex1"></div>
+
+  <h3>b. Chọn đáp án đúng (Choose the correct answer)</h3>
+  <div id="ex2"></div>
+
+  <h3>c. Điền từ vào chỗ trống (Complete the sentences)</h3>
+  <div id="ex3"></div>
+
+  <h3>d. Đặt câu (Make your own sentences)</h3>
+  <div class="box"><p>Use <b>mua</b> (buy), <b>bán</b> (sell), <b>thử</b> (try on) and <b>đắt</b> (expensive) to write your own sentences. Example: <i>Tôi muốn mua một cái áo.</i></p></div>
+</section>
+
+<!-- PRACTICE -->
+<section id="practice" class="view">
+  <h2>✏️ Luyện tập (Practice)</h2>
+  <p>Answers are hidden until you press <b>Check Answers</b>. You can retry any exercise.</p>
+
+  <div id="writeBox"></div>
+
+  <h3>Bài 3. Sắp xếp đoạn hội thoại (Build a Shopping Conversation)</h3>
+  <p>Put the sentences in the correct order.</p>
+  <div class="box">
+    <div class="answer" id="bB-answer"></div>
+    <div class="pool" id="bB-pool"></div>
+    <p><button class="small" onclick="checkBuilder('bB')">Check</button> <button class="ghost small" onclick="resetBuilder('bB')">Reset</button> <span id="bB-fb"></span></p>
+  </div>
+</section>
+
+<!-- REVIEW -->
+<section id="review" class="view">
+  <h2>🔁 Vocabulary Review &amp; Progress</h2>
+  <div class="prog">
+    <div><b id="pLearned">0</b>Words learned</div>
+    <div><b id="pReview">0</b>Words to review</div>
+    <div><b id="pEx">0</b>Exercises completed</div>
+    <div><b id="pScore">–</b>Quiz score</div>
+  </div>
+  <h3>Flashcards (tap to reveal the English)</h3>
+  <div class="grid" id="reviewCards"></div>
+</section>
+
+</main>
+
+<div class="footer"><b>Learn Vietnamese with Hà</b></div>
+
+<script>
+const $ = id => document.getElementById(id);
+const learned = new Set();
+const exDone = new Set();
+let quizScores = [];
+
+function show(v){
+  document.querySelectorAll('.view').forEach(e => e.classList.toggle('on', e.id === v));
+  window.scrollTo(0,0);
+  refreshProgress();
+}
+function speak(t){
+  if('speechSynthesis' in window){
+    const u = new SpeechSynthesisUtterance(t); u.lang = 'vi-VN'; speechSynthesis.speak(u);
+  }
+}
+function shuffle(a){ a = a.slice(); for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; }
+
+/* ---------- DATA ---------- */
+const CLOTHES = [
+ ["quần áo","clothes","👚"],["áo","shirt / top","👕"],["áo phông","T-shirt","👕"],["áo sơ mi","shirt","👔"],
+ ["áo khoác","jacket","🧥"],["quần","trousers / pants","👖"],["quần bò / quần jean","jeans","👖"],["quần đùi","shorts","🩳"],
+ ["váy","skirt / dress","👗"],["đầm","dress","👗"],["giày","shoes","👟"],["dép","sandals / slippers","🩴"],
+ ["mũ","hat","🧢"],["tất","socks","🧦"],["túi xách","handbag","👜"],["cửa hàng quần áo","clothing store","🏬"],["phòng thử đồ","fitting room","🚪"]
+];
+const COLORS = [
+ ["đen","black","#111111"],["trắng","white","#ffffff"],["cam","orange","#ff8a1f"],["vàng","yellow","#ffd21f"],
+ ["tím","purple","#8e44ad"],["hồng","pink","#ff6fa5"],["đỏ","red","#e53935"],["xám","grey","#9e9e9e"],
+ ["xanh lá cây","green","#43a047"],["xanh dương","blue","#1e63d6"],["xanh nước biển","sea blue","#0b3d91"],["xanh da trời","sky blue","#5bc0eb"]
+];
+const HEX = {}; COLORS.forEach(c => HEX[c[0]] = c[2]);
+const CLOTH_EXPR = [
+ ["Asking for something",[
+  ["Tôi muốn mua một cái áo.","I want to buy a shirt."],["Tôi muốn mua một chiếc quần jean.","I want to buy a pair of jeans."],
+  ["Tôi đang tìm một cái váy.","I’m looking for a skirt / dress."],["Cho tôi xem cái áo này.","Please show me this shirt."],
+  ["Tôi có thể thử cái này không?","Can I try this on?"]]],
+ ["Sizes",[
+  ["Anh mặc size nào? / Chị mặc cỡ nào?","What size do you wear?"],["Có size S không?","Do you have size S?"],
+  ["Có size lớn hơn không?","Do you have a larger size?"],["Có size nhỏ hơn không?","Do you have a smaller size?"],
+  ["Cái áo này hơi rộng.","This shirt is a little loose."],["Cái quần này hơi chật.","These trousers are a little tight."],
+  ["Cái áo này vừa với tôi.","This shirt fits me."]]],
+ ["Prices & discounts",[
+  ["Cái này bao nhiêu tiền?","How much is this?"],["Đắt quá!","That’s too expensive!"],["Rẻ quá!","That’s so cheap!"],
+  ["Có giảm giá không?","Is there a discount?"],["Có bớt không?","Can you lower the price?"],
+  ["Bớt cho tôi một chút được không?","Could you give me a little discount?"],
+  ["Tôi mua hai cái, có giảm giá không?","If I buy two, can I get a discount?"]]],
+ ["Availability",[
+  ["Có màu khác không?","Do you have another color?"],["Có cái khác không?","Do you have another one?"],["Còn hàng không?","Is it still in stock?"]]]
+];
+const DIALOG = [
+ ["C","Chào chị. Tôi muốn mua một cái áo.","Hello. I want to buy a shirt."],
+ ["S","Vâng. Anh thích áo màu gì?","Yes. What color shirt do you like?"],
+ ["C","Tôi thích màu xanh dương.","I like blue."],
+ ["S","Anh mặc size nào?","What size do you wear?"],
+ ["C","Tôi mặc size M.","I wear size M."],
+ ["S","Đây ạ. Anh thử xem.","Here you are. Try it on."],
+ ["C","Cái áo này hơi rộng. Có size nhỏ hơn không?","This shirt is a little loose. Do you have a smaller size?"],
+ ["S","Có ạ. Anh thử cái này nhé.","Yes. Try this one."],
+ ["C","Cái này vừa rồi. Bao nhiêu tiền vậy chị?","This one fits. How much is it?"],
+ ["S","250 nghìn đồng ạ.","That’s 250,000 dong."],
+ ["C","Đắt quá! Có giảm giá không?","Too expensive! Is there a discount?"],
+ ["S","Nếu anh mua hai cái, em giảm giá ạ.","If you buy two, I’ll give you a discount."],
+ ["C","Vậy cho tôi hai cái nhé.","Then I’ll take two, please."]
+];
+const COLOR_EXPR = [
+ ["Anh thích màu gì? / Chị thích màu gì?","What color do you like?"],["Cái áo này màu gì?","What color is this shirt?"],
+ ["Cái quần kia màu gì?","What color are those trousers?"],["Cái này có màu gì?","What color is this?"],
+ ["Có màu khác không?","Do you have another color?"],["Tôi thích màu đen.","I like black."],["Tôi không thích màu hồng.","I don’t like pink."]
+];
+// [type, color]: s = shirt, p = trousers, d = dress
+const COLOR_Q = [
+ ["Chọn cái áo màu xanh lá cây.",[["s","đỏ"],["s","xanh lá cây"],["s","vàng"]],1],
+ ["Chọn cái quần màu đen.",[["p","xanh dương"],["p","đen"],["p","xám"]],1],
+ ["Chọn cái váy màu hồng.",[["d","vàng"],["d","hồng"],["d","tím"]],1],
+ ["Chọn cái áo màu trắng.",[["s","xanh dương"],["s","đen"],["s","trắng"]],2],
+ ["Chọn cái quần màu xanh dương.",[["p","xanh dương"],["p","xám"],["p","cam"]],0],
+ ["Chọn cái áo màu cam.",[["s","tím"],["s","cam"],["s","đỏ"]],1],
+ ["Chọn cái váy màu xám.",[["d","xám"],["d","đen"],["d","hồng"]],0],
+ ["Chọn cái áo màu tím.",[["s","tím"],["s","vàng"],["s","hồng"]],0]
+];
+const PRODUCE = [
+ ["táo","apple","🍎",60000],["chuối","banana","🍌",35000],["cam","orange","🍊",50000],["xoài","mango","🥭",70000],
+ ["nho","grapes","🍇",120000],["dưa hấu","watermelon","🍉",15000],["dứa / thơm","pineapple","🍍",30000],["đu đủ","papaya","🥭",25000],
+ ["thanh long","dragon fruit","🐉",40000],["lê","pear","🍐",80000],["bưởi","pomelo","🍊",45000],["dâu tây","strawberry","🍓",150000],
+ ["rau cải","leafy greens","🥬",30000],["bắp cải","cabbage","🥬",25000],["cà rốt","carrot","🥕",25000],["cà chua","tomato","🍅",30000],
+ ["khoai tây","potato","🥔",25000],["hành tây","onion","🧅",25000],["dưa chuột","cucumber","🥒",20000],["rau muống","water spinach","🥬",20000],
+ ["súp lơ","cauliflower","🥦",35000],
+ ["thịt bò","beef","🥩",260000],["thịt lợn / thịt heo","pork","🥓",180000],["thịt gà","chicken","🍗",90000],["cá","fish","🐟",120000],
+ ["tôm","shrimp","🦐",300000],["cua","crab","🦀",350000],["trứng","eggs","🥚",40000]
+];
+const MARKET_EXPR = [
+ ["Asking for quantities",[["Cho tôi một ký táo.","Give me one kilogram of apples, please."],["Cho tôi nửa ký thịt bò.","Give me half a kilogram of beef, please."],["Tôi muốn mua hai lạng tôm.","I want to buy 200 grams of shrimp."],["Cho tôi một cân cam.","Give me one kilogram of oranges, please."]]],
+ ["Asking about prices",[["Một ký bao nhiêu tiền?","How much is one kilogram?"],["Một lạng bao nhiêu tiền?","How much is 100 grams?"],["Bao nhiêu tiền một cân?","How much is it per kilogram?"],["Có đắt không?","Is it expensive?"]]],
+ ["Choosing products",[["Táo này có tươi không?","Are these apples fresh?"],["Cho tôi xem cá này.","Let me see this fish."],["Tôi muốn mua rau xanh.","I want to buy green vegetables."],["Tôi không cần túi.","I don’t need a bag."]]]
+];
+
+/* ---------- RENDER: helpers ---------- */
+function exprHTML(groups){
+  return groups.map(g => `<div class="box"><b>${g[0]}</b>${g[1].map(p=>`<div class="exp"><span>${p[0]}</span><span class="en">${p[1]}</span></div>`).join('')}</div>`).join('');
+}
+function shirtSVG(type, color){
+  const paths = {
+    s:"M30 10 L10 25 L20 35 L28 30 L28 80 L72 80 L72 30 L80 35 L90 25 L70 10 Q50 22 30 10 Z",
+    p:"M22 5 H78 L82 92 H56 L50 40 L44 92 H18 Z",
+    d:"M38 5 H62 L66 35 L88 92 H12 L34 35 Z"
+  };
+  const stroke = color === '#ffffff' ? '#999' : '#333';
+  return `<svg viewBox="0 0 100 100" width="120" height="120"><path d="${paths[type]}" fill="${color}" stroke="${stroke}" stroke-width="2"/></svg>`;
+}
+function vnNum(n){ return ["không","một","hai","ba","bốn","năm","sáu","bảy","tám","chín","mười"][n] ?? String(n); }
+function qtyVi(g){
+  if(g === 500) return "nửa ký";
+  if(g >= 1000 && g % 1000 === 0) return vnNum(g/1000) + " ký";
+  if(g >= 1000) return vnNum(Math.floor(g/1000)) + " ký rưỡi";
+  return vnNum(g/100) + " lạng";
+}
+function qtyEn(g){ return g >= 1000 ? (g/1000) + " kg" : g + " g"; }
+
+/* ---------- RENDER: clothes ---------- */
+function renderClothes(){
+  $('clothesCards').innerHTML = CLOTHES.map((c,i)=>`
+    <div class="card ${learned.has('c'+i)?'done':''}" id="cc${i}">
+      <div class="em">${c[2]}</div><b>${c[0]}</b><small>${c[1]}</small>
+      <div style="margin-top:8px"><button class="ghost small" onclick="speak('${c[0]}')">🔊</button>
+      <button class="small" onclick="markLearned('c${i}',${i})">${learned.has('c'+i)?'✓ Learned':'Mark learned'}</button></div>
+    </div>`).join('');
+  $('clothesExpr').innerHTML = exprHTML(CLOTH_EXPR);
+  renderDialog();
+}
+function markLearned(key, i){
+  learned.has(key) ? learned.delete(key) : learned.add(key);
+  renderClothes(); renderColors(); renderProduce(); renderReview(); refreshProgress();
+}
+function renderDialog(){
+  const hide = $('roleSel') ? $('roleSel').value : '';
+  $('dialog').innerHTML = DIALOG.map((l,i)=>{
+    const name = l[0]==='C' ? 'Customer' : 'Shop assistant';
+    const hidden = hide === l[0];
+    const text = hidden ? `<span class="hidden-line" onclick="this.outerHTML='<span>${l[1].replace(/'/g,"\\'")}</span>'">Your turn — tap to reveal</span>` : l[1];
+    return `<p><b>${name}:</b> ${text}<div class="tr">${l[2]}</div></p>`;
+  }).join('');
+}
+function toggleAllTr(){ document.querySelectorAll('#dialog .tr').forEach(e=>e.classList.toggle('on')); }
+
+const CQ = {};
+function renderColorQuiz(){
+  $('colorQuiz').innerHTML = COLOR_Q.map((q,qi)=>`
+    <div class="q"><b>Question ${qi+1}:</b> ${q[0]}
+      <div class="opts">${q[1].map((it,oi)=>`
+        <button class="opt" id="o${qi}_${oi}" onclick="pickColor(${qi},${oi})">${shirtSVG(it[0], HEX[it[1]])}</button>`).join('')}
+      </div>
+      <div class="fb" id="fb${qi}"></div>
+    </div>`).join('');
+}
+function pickColor(qi, oi){
+  if(CQ[qi] !== undefined) return;
+  const q = COLOR_Q[qi]; CQ[qi] = oi;
+  q[1].forEach((it,i)=>{ const b=$('o'+qi+'_'+i); if(i===q[2]) b.classList.add('right'); else if(i===oi) b.classList.add('wrong'); });
+  const f = $('fb'+qi);
+  if(oi === q[2]){ f.className='fb ok'; f.textContent='✅ Đúng rồi! You picked the right one.'; }
+  else { f.className='fb bad'; f.textContent=`❌ Not quite. You picked ${q[1][oi][1]}; the correct one is ${q[1][q[2]][1]}.`; }
+  const done = Object.keys(CQ).length;
+  if(done === COLOR_Q.length){
+    const score = COLOR_Q.filter((q,i)=>CQ[i]===q[2]).length;
+    quizScores.push(score);
+    $('colorQuiz').insertAdjacentHTML('beforeend',`<div class="box"><b>Score: ${score} / ${COLOR_Q.length}</b> <button class="small" onclick="resetColorQuiz()">Try again</button></div>`);
+    refreshProgress();
+  }
+}
+function resetColorQuiz(){ for(const k in CQ) delete CQ[k]; renderColorQuiz(); }
+
+/* ---------- RENDER: colors ---------- */
+function renderColors(){
+  $('colorCards').innerHTML = COLORS.map((c,i)=>`
+    <div class="card ${learned.has('k'+i)?'done':''}">
+      <div class="swatch" style="background:${c[2]}"></div>
+      <b>${c[0]}</b><small>${c[1]}</small><br>
+      <button class="small" onclick="markLearned('k${i}')">${learned.has('k'+i)?'✓ Learned':'Mark learned'}</button>
+    </div>`).join('');
+  $('colorExpr').innerHTML = exprHTML([["Useful questions and answers",COLOR_EXPR]]);
+}
+
+/* ---------- Sentence / word-order builder ---------- */
+const BUILD = {};
+function setupBuilder(id, answer, sep){
+  BUILD[id] = {ans: answer, sep, pool: shuffle(answer), used: []};
+  drawBuilder(id);
+}
+function drawBuilder(id){
+  const b = BUILD[id];
+  $(id+'-answer').innerHTML = b.used.map(i=>`<span class="pill" style="cursor:pointer" onclick="unpick('${id}',${b.used.indexOf(i)})">${b.pool[i]}</span>`).join('');
+  $(id+'-pool').innerHTML = b.pool.map((w,i)=>`<button class="ghost small" ${b.used.includes(i)?'disabled style="opacity:.3"':''} onclick="pick('${id}',${i})">${w}</button>`).join('');
+}
+function pick(id,i){ BUILD[id].used.push(i); $(id+'-fb').textContent=''; drawBuilder(id); }
+function unpick(id,pos){ BUILD[id].used.splice(pos,1); drawBuilder(id); }
+function checkBuilder(id){
+  const b = BUILD[id];
+  const got = b.used.map(i=>b.pool[i]);
+  const ok = got.join(b.sep) === b.ans.join(b.sep);
+  $(id+'-fb').innerHTML = ok ? '<span class="fb ok">✅ Correct!</span>' :
+    '<span class="fb bad">❌ Not yet. Correct order: ' + b.ans.join(b.sep===' ' ? ' ' : ' → ') + '</span>';
+  if(id==='bB' && ok) exDone.add('bB');
+  refreshProgress();
+}
+function resetBuilder(id){ setupBuilder(id, BUILD[id].ans, BUILD[id].sep); }
+
+/* ---------- RENDER: market ---------- */
+function renderProduce(){
+  $('produceCards').innerHTML = PRODUCE.map((p,i)=>`
+    <div class="card ${learned.has('p'+i)?'done':''}">
+      <div class="em">${p[2]}</div><b>${p[0]}</b><small>${p[1]}</small><br>
+      <small>≈ ${p[3].toLocaleString('en-US')} ₫ / kg</small><br>
+      <button class="ghost small" onclick="speak('${p[0]}')">🔊</button>
+      <button class="small" onclick="markLearned('p${i}')">${learned.has('p'+i)?'✓':'Learned'}</button>
+    </div>`).join('');
+  $('marketExpr').innerHTML = exprHTML(MARKET_EXPR);
+  $('shopGrid').innerHTML = PRODUCE.slice(0,22).map((p,i)=>`
+    <div class="card"><div class="em">${p[2]}</div><b>${p[0]}</b><small>${p[3].toLocaleString('en-US')} ₫ / kg</small>
+      <div style="margin-top:6px"><button class="ghost small" onclick="addItem(${i},100)">+1 lạng</button>
+      <button class="ghost small" onclick="addItem(${i},500)">+nửa ký</button>
+      <button class="ghost small" onclick="addItem(${i},1000)">+1 ký</button></div></div>`).join('');
+  renderBasket();
+}
+const LIST = [["táo",1000],["thịt bò",500],["tôm",200],["rau muống",200]];
+const basket = {};
+function addItem(i,g){ const n = PRODUCE[i][0]; basket[n]=(basket[n]||0)+g; $('shopResult').textContent=''; renderBasket(); }
+function removeItem(n,g){ basket[n]=Math.max(0,(basket[n]||0)-g); if(!basket[n]) delete basket[n]; renderBasket(); }
+function renderBasket(){
+  const names = Object.keys(basket);
+  let total = 0;
+  $('basketItems').innerHTML = names.length ? names.map(n=>{
+    const p = PRODUCE.find(x=>x[0]===n); const cost = Math.round(p[3]*basket[n]/1000); total += cost;
+    return `<div class="exp"><span>${p[2]} ${n} — ${qtyVi(basket[n])}</span><span><button class="ghost small" onclick="removeItem('${n}',100)">−</button> ${cost.toLocaleString('en-US')} ₫</span></div>`;
+  }).join('') : '<i>Your basket is empty.</i>';
+  $('basketTotal').textContent = total.toLocaleString('en-US');
+  $('listBox').innerHTML = LIST.map(([n,g])=>{
+    const ok = (basket[n]||0) === g;
+    return `<span class="pill" style="${ok?'background:#c8f0c8':''}">${ok?'✅ ':''}${qtyVi(g)} ${n}</span>`;
+  }).join('');
+}
+function finishShopping(){
+  const names = Object.keys(basket);
+  if(!names.length){ $('shopResult').textContent='Add some products first.'; return; }
+  const vi = names.map(n=>qtyVi(basket[n])+' '+n).join(' và ');
+  const en = names.map(n=>qtyEn(basket[n])+' of '+PRODUCE.find(x=>x[0]===n)[1]).join(', and ');
+  $('shopResult').innerHTML = `<b>Vietnamese:</b> Tôi mua ${vi}.<br><b>English:</b> I bought ${en}.`;
+}
+function resetShop(){ for(const k in basket) delete basket[k]; $('shopResult').textContent=''; renderBasket(); }
+
+/* ---------- RENDER: reading ---------- */
+const READ_VOCAB = [["hôm qua","yesterday","Hôm qua tôi đi siêu thị."],["đi siêu thị","go to the supermarket","Tôi thích đi siêu thị."],["cùng mẹ","with my mother","Tôi đi chợ cùng mẹ."],["hàng hóa","goods / products","Siêu thị có nhiều hàng hóa."],["mua","buy","Tôi muốn mua táo."],["bán","sell","Cửa hàng này bán quần áo."],["táo","apple","Tôi mua táo."],["nho xanh","green grapes","Nho xanh rất ngon."],["thử áo","try on a shirt","Tôi muốn thử áo."],["màu vàng","yellow","Cái áo màu vàng đẹp."],["đẹp","beautiful","Cái váy này đẹp."],["hơi đắt","a little expensive","Cái áo này hơi đắt."],["ở nhà","at home","Ở nhà có rau."],["rau bắp cải","cabbage","Tôi có rau bắp cải."],["thịt bò","beef","Tôi thích thịt bò."],["vì thế","therefore / so","Trời mưa, vì thế tôi ở nhà."]];
+function renderReadVocab(){
+  $('readVocab').innerHTML = READ_VOCAB.map((v,i)=>`
+    <div class="card flip" onclick="this.querySelector('.back').style.display='block'">
+      <b>${v[0]}</b><div class="back" style="display:none"><i>${v[1]}</i><br><small>${v[2]}</small></div>
+      <small style="color:#999">tap to reveal</small></div>`).join('');
+}
+
+/* ---------- EXERCISES ---------- */
+const TF = [
+ ["Chị Miyaki đã đi siêu thị một mình.",false,"Sai — Miyaki went cùng mẹ (with her mother), so she was not alone."],
+ ["Chị Miyaki mua 3 kg táo Fuji của Nhật và 2 kg nho xanh.",false,"Sai — the passage says táo của Mỹ (American apples), not Japanese Fuji."],
+ ["Mẹ chị Miyaki đã thử một cái áo màu vàng.",true,"Đúng — her mother tried on a yellow shirt."],
+ ["Cái áo màu vàng đẹp và rẻ.",false,"Sai — the shirt was đẹp but hơi đắt (a little expensive), not cheap."],
+ ["Chị Miyaki đã không mua rau.",true,"Đúng — there was cabbage at home, so she didn’t buy vegetables."]
+];
+const MCQ = [
+ ["Hôm qua, Miyaki đi đâu?",["Đi chợ.","Đi siêu thị.","Đi cửa hàng quần áo."],1,"The passage says đi siêu thị (went to the supermarket)."],
+ ["Miyaki đi siêu thị cùng ai?",["Cùng mẹ.","Cùng bạn.","Một mình."],0,"cùng mẹ means with her mother."],
+ ["Miyaki đã mua bao nhiêu táo?",["2 kg.","3 kg.","5 kg."],1,"She bought 3 kg of apples."],
+ ["Mẹ Miyaki đã thử cái áo màu gì?",["Màu đỏ.","Màu trắng.","Màu vàng."],2,"Her mother tried on the yellow shirt."],
+ ["Tại sao mẹ Miyaki không mua áo?",["Vì áo hơi đắt.","Vì áo quá rộng.","Vì mẹ không thích màu vàng."],0,"The shirt was hơi đắt. The passage never says she disliked the color."],
+ ["Ở nhà đã có gì?",["Táo và nho.","Rau bắp cải và thịt bò.","Thịt gà và cá."],1,"At home there was rau bắp cải and thịt bò."]
+];
+const FILL = [
+ ["Hôm qua tôi đi ___ cùng mẹ.","siêu thị","siêu thị = supermarket."],
+ ["Tôi muốn ___ một cái áo mới.","mua","mua = buy."],
+ ["Cái áo này đẹp nhưng hơi ___.","đắt","hơi đắt = a little expensive."],
+ ["Cửa hàng đang ___ quần áo.","bán","bán = sell (mua = buy, bán = sell)."],
+ ["Tôi muốn ___ cái váy này.","thử","thử = try (on)."],
+ ["Quả chuối này có ___.","màu vàng","Bananas are yellow, so màu vàng (yellow)."],
+ ["Cho tôi ___ táo.","một ký","một ký = one kilogram."],
+ ["Hôm nay siêu thị giảm giá, nhiều đồ rất ___.","rẻ","rẻ = cheap; giảm giá = discount."]
+];
+const BANK = ["mua","bán","đắt","rẻ","màu vàng","một ký","siêu thị","thử"];
+const EXR = {};
+
+function renderExercises(){
+  $('ex1').innerHTML = `<div class="box">` + TF.map((t,i)=>`
+    <div class="exp"><span>${i+1}. ${t[0]}</span>
+      <span><label><input type="radio" name="tf${i}" value="1"> Đúng</label> <label><input type="radio" name="tf${i}" value="0"> Sai</label></span></div>
+    <div class="fb" id="tfb${i}"></div>`).join('') + `</div>
+    <button onclick="checkEx(1)">Check Answers</button> <button class="ghost small" onclick="resetEx(1)">Try again</button> <span id="ex1score"></span>`;
+  $('ex2').innerHTML = `<div class="box">` + MCQ.map((q,i)=>`
+    <div class="q"><b>${i+1}. ${q[0]}</b><div class="opts">${q[1].map((o,j)=>`<label class="opt" id="mq${i}_${j}"><input type="radio" name="mq${i}" value="${j}"> ${o}</label>`).join('')}</div>
+    <div class="fb" id="mqb${i}"></div></div>`).join('') + `</div>
+    <button onclick="checkEx(2)">Check Answers</button> <button class="ghost small" onclick="resetEx(2)">Try again</button> <span id="ex2score"></span>`;
+  $('ex3').innerHTML = `<div class="box">Word bank: ${BANK.map(w=>`<span class="pill">${w}</span>`).join('')}</div>` + FILL.map((f,i)=>`
+    <div class="exp"><span>${i+1}. ${f[0].split('___')[0]}<select id="fs${i}"><option value="">—</option>${BANK.map(w=>`<option>${w}</option>`).join('')}</select>${f[0].split('___')[1]}</span></div>
+    <div class="fb" id="fsb${i}"></div>`).join('') + `
+    <button onclick="checkEx(3)">Check Answers</button> <button class="ghost small" onclick="resetEx(3)">Try again</button> <span id="ex3score"></span>`;
+}
+function checkEx(n){
+  let score = 0;
+  if(n===1){
+    TF.forEach((t,i)=>{
+      const v = document.querySelector(`input[name=tf${i}]:checked`); const f = $('tfb'+i);
+      if(!v){ f.className='fb'; f.textContent='No answer selected.'; return; }
+      const ok = (v.value==='1') === t[1];
+      ok ? score++ : 0;
+      f.className = 'fb ' + (ok?'ok':'bad'); f.textContent = (ok?'✅ ':'❌ Correct answer: '+(t[1]?'Đúng':'Sai')+'. ') + t[2];
+    });
+    $('ex1score').textContent = `Score: ${score} / ${TF.length}`;
+  }
+  if(n===2){
+    MCQ.forEach((q,i)=>{
+      const v = document.querySelector(`input[name=mq${i}]:checked`); const f = $('mqb'+i);
+      const picked = v ? +v.value : -1;
+      if(picked === q[2]) score++;
+      q[1].forEach((_,j)=>{ const el=$(`mq${i}_${j}`); if(j===q[2]) el.classList.add('right'); else if(j===picked) el.classList.add('wrong'); });
+      f.className = 'fb ' + (picked===q[2]?'ok':'bad');
+      f.textContent = picked===q[2] ? '✅ ' + q[3] : (picked<0 ? 'No answer selected. ' : '❌ You chose “'+q[1][picked]+'”. ') + 'Correct: ' + q[1][q[2]] + '. ' + q[3];
+    });
+    $('ex2score').textContent = `Score: ${score} / ${MCQ.length}`;
+  }
+  if(n===3){
+    FILL.forEach((f,i)=>{
+      const v = $('fs'+i).value; const out = $('fsb'+i);
+      const ok = v === f[1];
+      if(ok) score++;
+      out.className = 'fb ' + (ok?'ok':'bad');
+      out.textContent = ok ? '✅ ' + f[2] : (v ? `❌ “${v}” doesn’t fit. Answer: ${f[1]}. ` : 'Empty. Answer: '+f[1]+'. ') + f[2];
+    });
+    $('ex3score').textContent = `Score: ${score} / ${FILL.length}`;
+  }
+  EXR[n] = score; exDone.add('ex'+n); refreshProgress();
+}
+function resetEx(n){ renderExercises(); EXR[n]=undefined; exDone.delete('ex'+n); refreshProgress(); }
+
+/* ---------- REVIEW & PROGRESS ---------- */
+function renderReview(){
+  const all = [...CLOTHES.map((c,i)=>({k:'c'+i,vi:c[0],en:c[1],em:c[2]})), ...COLORS.map((c,i)=>({k:'k'+i,vi:c[0],en:c[1],em:'<span style="display:inline-block;width:28px;height:28px;border-radius:50%;border:1px solid #999;background:'+c[2]+'"></span>'})), ...PRODUCE.map((p,i)=>({k:'p'+i,vi:p[0],en:p[1],em:p[2]}))];
+  $('reviewCards').innerHTML = all.map(w=>`<div class="card flip" onclick="this.querySelector('.back').style.display='block'"><div class="em">${w.em}</div><b>${w.vi}</b><div class="back" style="display:none">${w.en}</div><small style="color:#999">tap for English</small></div>`).join('');
+}
+function refreshProgress(){
+  const total = CLOTHES.length + COLORS.length + PRODUCE.length;
+  $('pLearned').textContent = learned.size;
+  $('pReview').textContent = total - learned.size;
+  $('pEx').textContent = exDone.size + ' / 5';
+  $('pScore').textContent = quizScores.length ? Math.round(quizScores[quizScores.length-1]/COLOR_Q.length*100)+'%' : '–';
+}
+
+/* ---------- Bài 2: writing, 3 random sentences from a bank of 20 ---------- */
+const WRITE_BANK = [
+ ["I want to buy a shirt.",["Tôi muốn mua một cái áo","Tôi muốn mua cái áo"]],
+ ["This shirt is expensive.",["Cái áo này đắt","Áo này đắt"]],
+ ["I like the color black.",["Tôi thích màu đen"]],
+ ["Do you have a larger size?",["Có size lớn hơn không"]],
+ ["How much is this?",["Cái này bao nhiêu tiền"]],
+ ["I want to buy one kilogram of apples.",["Tôi muốn mua một ký táo"]],
+ ["My mother likes the yellow dress.",["Mẹ tôi thích cái váy màu vàng"]],
+ ["This skirt is cheap.",["Cái váy này rẻ"]],
+ ["I went to the market yesterday.",["Hôm qua tôi đi chợ"]],
+ ["This shrimp is fresh.",["Con tôm này tươi","Tôm này tươi"]],
+ ["Can I try this on?",["Tôi có thể thử cái này không"]],
+ ["I don’t like pink.",["Tôi không thích màu hồng"]],
+ ["Give me half a kilogram of beef.",["Cho tôi nửa ký thịt bò"]],
+ ["The fitting room is over there.",["Phòng thử đồ ở đằng kia"]],
+ ["These trousers are a little tight.",["Cái quần này hơi chật"]],
+ ["I have a green jacket.",["Tôi có một cái áo khoác màu xanh lá cây"]],
+ ["Do you have another color?",["Có màu khác không"]],
+ ["She buys two bananas.",["Cô ấy mua hai quả chuối"]],
+ ["I don’t need a bag.",["Tôi không cần túi"]],
+ ["This store sells shoes.",["Cửa hàng này bán giày"]]
+];
+let WR = [];
+function norm(s){ return s.toLowerCase().normalize('NFC').replace(/[.,!?;:"“”'’]/g,'').replace(/\s+/g,' ').trim(); }
+function renderWriting(){
+  WR = shuffle(WRITE_BANK).slice(0,3);
+  $('writeBox').innerHTML = `<h3>Bài 2. Dịch các câu sau sang tiếng Việt.</h3><p><i>Translate these sentences into Vietnamese. (3 random sentences each time)</i></p><div class="box">` +
+    WR.map((it,i)=>`<div class="exp"><span>${i+1}. ${it[0]}</span></div><input id="wr${i}" style="width:100%;padding:8px;margin:4px 0 2px;border:2px solid var(--line);border-radius:10px;font:inherit"><div class="fb" id="wrb${i}"></div>`).join('') +
+    `<button onclick="checkWriting()">Check Answers</button> <button class="ghost small" onclick="renderWriting()">New sentences</button> <span id="wrscore"></span></div>`;
+}
+function checkWriting(){
+  let score = 0;
+  WR.forEach((it,i)=>{
+    const v = norm($('wr'+i).value); const f = $('wrb'+i);
+    const ok = it[1].some(a => norm(a) === v);
+    if(ok){ score++; f.className='fb ok'; f.textContent='✅ Correct!'; }
+    else { f.className='fb bad'; f.textContent='❌ Model answer: ' + it[1][0] + '. Check the word order and the particles.'; }
+  });
+  $('wrscore').textContent = `Score: ${score} / ${WR.length}`;
+  exDone.add('wr'); refreshProgress();
+}
+
+/* ---------- INIT ---------- */
+renderClothes(); renderColors(); renderColorQuiz(); renderProduce(); renderReadVocab(); renderExercises(); renderWriting(); renderReview(); refreshProgress();
+setupBuilder('bA', ['Cái','áo','màu','đỏ.'], ' ');
+setupBuilder('bB', ['Chào chị!','Chị muốn mua gì?','Tôi muốn mua một cái áo.','Cái này bao nhiêu tiền?','200 nghìn đồng ạ.'], ' | ');
+</script>
+</body>
+</html>
